@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز مرشحات سبط المهنية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: #f0f4f8;
+            padding-bottom: 90px;
+        }
+        .container-main { max-width: 600px; margin: 30px auto; padding: 15px; }
+        
+        .page-content { display: none; }
+        .page-active { display: block; animation: slideUp 0.4s ease-out; }
+        
+        .custom-card {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 30px;
+            border: none;
+        }
+
+        .form-label { font-weight: 700; color: #2c3e50; margin-bottom: 8px; font-size: 0.95rem; }
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s;
+            background-color: #fcfcfc;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.1);
+            background-color: #fff;
+        }
+
+        .input-group-text {
+            border-radius: 12px;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            color: #1a73e8;
+        }
+
+        /* القائمة السفلية المودرن */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            z-index: 1000;
+            border-radius: 20px 20px 0 0;
+        }
+        .nav-item {
+            text-align: center;
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
+        .nav-item.active { color: #1a73e8; font-weight: bold; }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 5px; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .order-item {
+            border-right: 5px solid #1a73e8;
+            background: #ffffff;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container-main">
+    
+    <div id="homePage" class="page-content page-active">
+        <div class="custom-card">
+            <div class="text-center mb-4">
+                <div class="bg-primary d-inline-block p-3 rounded-circle mb-3 shadow-sm">
+                    <i class="fas fa-book-open text-white fa-lg"></i>
+                </div>
+                <h4>حجز  والمرشحات</h4>
+                <p class="text-muted small">يرجى ملء كافة الحقول لضمان سرعة التوصيل</p>
+            </div>
+
+            <form id="orderForm">
+                <div class="mb-3">
+                    <label class="form-label">الاسم الثلاثي للطالب</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" id="fullName" class="form-control" placeholder="مثال: محمد علي حسن" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">المرحلة الدراسية</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                        <select id="studentClass" class="form-select" onchange="updateBooks()" required>
+                            <option value="" disabled selected>إضغط للاختيار</option>
+                            <option value="السادس الابتدائي">السادس الابتدائي</option>
+                            <option value="الثالث متوسط">الثالث متوسط</option>
+                            <option value="السادس العلمي">السادس الأعدادي العلمي</option>
+                            <option value="السادس الأدبي">السادس الأعدادي الأدبي</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="bookSection" class="mb-3" style="display:none;">
+                    <label class="form-label">اختر المادة</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-book"></i></span>
+                        <select id="bookName" class="form-select" required></select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">عنوان التوصيل التفصيلي</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" id="address" class="form-control" placeholder="المحافظة - القضاء - المنطقة" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">رقم الهاتف النشط</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                        <input type="tel" id="phoneNumber" class="form-control" placeholder="07xxxxxxxx" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary w-100 py-3 shadow-sm mt-3">
+                    <span id="btnText">تأكيد الحجز الآن</span>
+                    <span id="loader" class="spinner-border spinner-border-sm d-none"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="ordersPage" class="page-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="m-0"><i class="fas fa-receipt me-2 text-primary"></i>طلباتي الأخيرة</h4>
+            <span class="badge bg-light text-dark rounded-pill border" id="orderCount">0 طلبات</span>
+        </div>
+        <div id="ordersList">
+            <p class="text-center text-muted py-5">لا توجد طلبات سابقة حالياً.</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('homePage', this)">
+        <i class="fas fa-home"></i>
+        <span>الرئيسية</span>
+    </div>
+    <div class="nav-item" onclick="showPage('ordersPage', this)">
+        <i class="fas fa-history"></i>
+        <span>طلباتي</span>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const booksData = {
+        "السادس الابتدائي": ["الإسلامية", "العربية", "الإنجليزية", "الرياضيات", "العلوم", "الاجتماعيات"],
+        "الثالث متوسط": ["الكيمياء", "الفيزياء", "الأحياء", "الرياضيات", "العربية", "الإنجليزية", "الاجتماعيات"],
+        "السادس العلمي": ["الفيزياء", "الكيمياء", "الأحياء", "الرياضيات", "العربية", "الإنجليزية", "الإسلامية"],
+        "السادس الأدبي": ["التاريخ", "الجغرافيا", "الاقتصاد", "العربية", "الإنجليزية", "الرياضيات", "الإسلامية"]
+    };
+
+    function updateBooks() {
+        const selected = document.getElementById('studentClass').value;
+        const bookSelect = document.getElementById('bookName');
+        const bookSection = document.getElementById('bookSection');
+        bookSelect.innerHTML = '<option value="" disabled selected>اختر الكتاب...</option>';
+        booksData[selected].forEach(b => {
+            bookSelect.innerHTML += `<option value="${b}">${b}</option>`;
+        });
+        bookSection.style.display = 'block';
+    }
+
+    function showPage(pageId, element) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('page-active'));
+        document.getElementById(pageId).classList.add('page-active');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        element.classList.add('active');
+        if(pageId === 'ordersPage') loadOrders();
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const loader = document.getElementById('loader');
+
+        btn.disabled = true;
+        btnText.innerText = 'جاري المعالجة...';
+        loader.classList.remove('d-none');
+
+        const data = {
+            token: '7594757892:AAE1Zo81jlb3MZNeZdQ71_a0xtcHdCztCfU',
+            chatId: '5597396937',
+            name: document.getElementById('fullName').value,
+            class: document.getElementById('studentClass').value,
+            book: document.getElementById('bookName').value,
+            address: document.getElementById('address').value,
+            phone: document.getElementById('phoneNumber').value,
+            date: new Date().toLocaleString('ar-EG')
+        };
+
+        const msg = `📬 *طلب حجز وتوصيل جديد*\n\n👤 *الاسم:* ${data.name}\n🎓 *الصف:* ${data.class}\n📚 *الكتاب:* ${data.book}\n📍 *العنوان:* ${data.address}\n📞 *الهاتف:* ${data.phone}\n⏰ *التاريخ:* ${data.date}`;
+
+        fetch(`https://api.telegram.org/bot${data.token}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: data.chatId, text: msg, parse_mode: 'Markdown' })
+        })
+        .then(res => {
+            if(res.ok) {
+                saveOrder(data);
+                Swal.fire({
+                    title: 'رائع!',
+                    text: 'تم إرسال طلبك بنجاح، سنقوم بالتواصل معك قريباً.',
+                    icon: 'success',
+                    confirmButtonText: 'حسناً',
+                    confirmButtonColor: '#1a73e8'
+                });
+                document.getElementById('orderForm').reset();
+                document.getElementById('bookSection').style.display = 'none';
+            }
+        })
+        .catch(() => {
+            Swal.fire('خطأ!', 'فشل الإرسال، تحقق من الاتصال بالإنترنت.', 'error');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btnText.innerText = 'تأكيد الحجز الآن';
+            loader.classList.add('d-none');
+        });
+    });
+
+    function saveOrder(order) {
+        let orders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+        orders.unshift(order);
+        localStorage.setItem('myOrders', JSON.stringify(orders));
+    }
+
+    function loadOrders() {
+        const list = document.getElementById('ordersList');
+        const count = document.getElementById('orderCount');
+        const orders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+        
+        count.innerText = `${orders.length} طلبات`;
+        if(orders.length === 0) return;
+
+        list.innerHTML = '';
+        orders.forEach(o => {
+            list.innerHTML += `
+                <div class="order-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1 fw-bold">كتاب ${o.book}</h6>
+                            <div class="text-muted small"><i class="fas fa-graduation-cap me-1"></i> ${o.class}</div>
+                        </div>
+                        <span class="text-muted" style="font-size: 11px;">${o.date}</span>
+                    </div>
+                    <hr class="my-2 opacity-50">
+                    <div class="text-secondary small mb-2"><i class="fas fa-map-marker-alt me-1"></i> ${o.address}</div>
+                    <div class="status-badge" style="background: #e3f2fd; color: #1a73e8; padding: 6px 12px; border-radius: 8px; font-size: 12px;">
+                        <i class="fas fa-sync-alt fa-spin me-2"></i> بانتظار اتصال عليك انتظر....
+                    </div>
+                </div>
+            `;
+        });
+    }
+</script>
+
+</body>
+</html>
